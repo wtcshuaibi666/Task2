@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/context/spring-tx.xsd
+         http://www.springframework.org/schema/mvc
+         http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        ">
+    <!-- 扫描注解包  -->
+    <context:component-scan base-package="com.jnshu"/>
+    <!--会自动注册RequestMappingHandlerMapping与RequestMappingHandlerAdapter两个Bean,
+           这是Spring MVC为@Controller分发请求所必需的，并且提供了数据绑定支持，
+           @NumberFormatannotation支持，@DateTimeFormat支持,@Valid支持读写XML的支持（JAXB）和读写JSON的支持（默认Jackson）等功能-->
+    <mvc:annotation-driven  conversion-service="conversionService" validator="validator"/>
+    <!-- 转换器配置 -->
+    <!-- 自定义参数绑定 -->
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+    <!-- 转换器 -->
+    <property name="converters">
+    <list>
+        <!-- 日期类型转换 -->
+        <bean class="com.jnshu.timeUtil.LongConverter"/>
+    </list>
+    </property>
+    </bean>
+    <!--配置静态资源访问
+ 如果你的DispatcherServlet拦截 *.do这样的URL，就不存在访问不到静态资源的问题。
+ 如果你的DispatcherServlet拦截“/”，拦截了所有的请求，同时对*.js,*.jpg的访问也就被拦截了。
+ 目的：可以正常访问静态文件，不要找不到静态文件报404-->
+    <mvc:default-servlet-handler/>
+    <!-- 配置sprigmvc视图解析器：解析逻辑试图
+         后台返回逻辑试图：index
+        视图解析器解析出真正物理视图：前缀+逻辑试图+后缀====/WEB-INF/page/index.jsp-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <!--配置validator校验器-->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <!-- 校验器，使用hibernate校验器 -->
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+        <!-- 指定校验使用的资源文件，在文件中配置校验错误信息，如果不指定则默认使用classpath下面的ValidationMessages.properties文件 -->
+        <property name="validationMessageSource" ref="MessageSource"/>
+    </bean>
+
+
+    <bean id="MessageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <!-- 指定校验信息的资源文件的基本文件名称，不包括后缀，后缀默认是properties -->
+        <property name="basename" value="Messages"/>
+
+        <!-- 指定文件的编码 -->
+        <property name="fileEncodings" value="utf8"/>
+        <!-- 对资源文件内容缓存的时间，单位秒 -->
+        <property name="cacheSeconds" value="120"/>
+    </bean>
+    <!--1： mvc:annotation-driven默认创建了 RequestMappingHandlerMapping和  RequestMappingHandlerAdapter对象
+    提供对JSon数据格式的支持-->
+    <mvc:annotation-driven />
+    <!-- 2.配置静态资源访问 -->
+    <mvc:default-servlet-handler/>
+</beans>
+
