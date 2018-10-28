@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace：必须与对应的接口全类名一致  UserMapper.java
+    id ：必须与对应接口的某个对应的方法名一致即必须要和UserMapper.java接口中的方法同名。
+ -->
+<mapper namespace="com.jnshu.mapper.UserMapper">
+
+    <!-- 新增 -->
+
+<insert id="saveUser" parameterType="User">
+    insert into xzyuan(name,qq,type,entranceTime,school,onlineNum,dailylink,wish,bro,create_at,update_at)
+    value (#{name},#{qq},#{type},#{entranceTime},#{school},#{onlineNum},#{dailylink},#{wish},#{bro},#{create_at},#{update_at})
+</insert>
+    <!-- 修改 -->
+<update id="updateUser" parameterType="User">
+    update xzyuan set name=#{name},qq=#{qq},entranceTime=#{entranceTime},school=#{school},onlineNum=#{onlineNum},dailylink=#{dailylink},
+    wish=#{wish},bro=#{bro},create_at=#{create_at},update_at=#{update_at} where id=#{id}
+</update>
+    <resultMap id="UserResultMap" type="com.jnshu.entity.User">
+        <id property="id" column="id" javaType="java.lang.Integer"/>
+        <result property="name" column="name" javaType="java.lang.String"/>
+        <result property="qq" column="qq" javaType="java.lang.String"/>
+        <result property="type" column="type" javaType="java.lang.String"/>
+        <result property="entranceTime" column="entranceTime" javaType="java.lang.Integer"/>
+        <result property="school" column="school" javaType="java.lang.String"/>
+        <result property="onlineNum" column="onlineNum" javaType="java.lang.String"/>
+        <result property="dailylink" column="dailylink" javaType="java.lang.String"/>
+        <result property="wish" column="wish" javaType="java.lang.String"/>
+        <result property="bro" column="bro" javaType="java.lang.String"/>
+        <result property="create_at" column="create_at" javaType="java.lang.Integer"/>
+        <result property="update_at" column="update_at" javaType="java.lang.Integer"/>
+    </resultMap>
+
+
+    <!-- 删除 -->
+    <delete id="deleteUser" parameterType="int">
+        delete from xzyuan where id=#{id}
+    </delete>
+
+    <!-- 根据id查找单个用户 -->
+    <select id="findUserById" parameterType="int" resultType="User" >
+        select * from xzyuan where id=#{id}
+    </select>
+
+    <!-- 查询所有 -->
+    <select id="findAll" resultType="User"  resultMap="UserResultMap">
+        select id,name,qq,type,entranceTime,school,onlineNum,dailylink,wish,bro,create_at,update_at from xzyuan
+    </select>
+</mapper>
+
+
+
